@@ -6,7 +6,7 @@ import Loader from 'components/Loader';
 import Button from 'components/Button';
 
 const ImageGallery = ({
-  images = [],
+  images = ['https://cdn.pixabay.com/user/2019/04/11/22-45-05-994_250x250.jpg'],
   isFetching,
   error,
   openFullScreenMode,
@@ -49,7 +49,7 @@ ImageGallery.propTypes = {
       webformatURL: PropTypes.string.isRequired,
       largeImageURL: PropTypes.string.isRequired,
     }).isRequired
-  ).isRequired,
+  ),
   openFullScreenMode: PropTypes.func.isRequired,
   currentPage: PropTypes.number.isRequired,
   handleLoadMoreBtn: PropTypes.func.isRequired,

@@ -5,8 +5,6 @@ import style from '../ImageGalleryItem/ImageGalleryItem.module.css';
 const ImageGalleryItem = ({
   webformatURL,
   tags = '',
-  webformatWidth,
-  webformatHeight,
   largeImageURL,
   openFullScreenMode,
 }) => {
@@ -16,8 +14,6 @@ const ImageGalleryItem = ({
         onClick={() => {
           openFullScreenMode(largeImageURL, tags);
         }}
-        width={webformatWidth}
-        height={webformatHeight}
         className={style.ImageGalleryItemImage}
         src={webformatURL}
         alt={tags}
