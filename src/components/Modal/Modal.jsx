@@ -5,6 +5,7 @@ import style from './Modal.module.css';
 const Modal = ({ closeModal, src, alt }) => {
   const handleKeyPress = useCallback(e => {
     if (e.key === 'Escape') closeModal();
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -13,6 +14,7 @@ const Modal = ({ closeModal, src, alt }) => {
     return () => {
       document.removeEventListener('keydown', handleKeyPress);
     };
+    // eslint-disable-next-line
   }, []);
 
   return (
