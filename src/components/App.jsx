@@ -6,12 +6,12 @@ import Modal from './Modal';
 import { useCallback, useState } from 'react';
 
 const App = () => {
-  const [images, isImages] = useState([]);
-  const [currentPage, isCurrentPage] = useState(1);
-  const [SearchValue, isSearchValue] = useState('');
-  const [errorMessage, isErrorMessage] = useState('');
-  const [isFetching, isFetchingCheck] = useState(false);
-  const [modal, isModal] = useState({ isOpen: false, src: '', alt: '' });
+  const [images, setImages] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [SearchValue, setSearchValue] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isFetching, setFetchingCheck] = useState(false);
+  const [modal, setModal] = useState({ isOpen: false, src: '', alt: '' });
 
   const hendleSubmitForm = useCallback(
     async value => {
@@ -22,8 +22,8 @@ const App = () => {
       let page = 0;
 
       if (typeof value === 'string' && SearchValue !== value) {
-        isCurrentPage(1);
-        isSearchValue(value);
+        setCurrentPage(1);
+        setSearchValue(value);
         page = 1;
         inputValue = value;
         console.log('inputValue', inputValue);
@@ -34,33 +34,33 @@ const App = () => {
         inputValue = SearchValue;
       }
 
-      isFetchingCheck(true);
+      setFetchingCheck(true);
       try {
         const { hits } = await searchPhotoApi(inputValue, page);
         console.log('currentPage', currentPage); //ЗАПИТ НА СЕРВЕР
 
         if (page === 1) {
-          isImages(hits);
+          setImages(hits);
         } else {
-          isImages(prevState => [...prevState, ...hits]);
+          setImages(prevState => [...prevState, ...hits]);
         }
       } catch (error) {
         console.log(error);
-        isErrorMessage(error.message);
+        setErrorMessage(error.message);
       } finally {
-        isCurrentPage(prevState => prevState + 1);
-        isFetchingCheck(false);
+        setCurrentPage(prevState => prevState + 1);
+        setFetchingCheck(false);
       }
     },
     [SearchValue, currentPage]
   );
 
   const handleOpenModal = (src, alt) => {
-    isModal(() => ({ isOpen: true, src, alt }));
+    setModal(() => ({ isOpen: true, src, alt }));
   };
 
   const handleCloseModal = () => {
-    isModal({ isOpen: false, src: '', alt: '' });
+    setModal({ isOpen: false, src: '', alt: '' });
   };
 
   return (
