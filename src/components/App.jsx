@@ -3,43 +3,22 @@ import style from '../components/App.module.css';
 import Searchbar from './Searchbar';
 import ImageGallery from './ImageGallery';
 import Modal from './Modal';
-import { useCallback, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const App = () => {
   const [images, setImages] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [SearchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isFetching, setFetchingCheck] = useState(false);
   const [modal, setModal] = useState({ isOpen: false, src: '', alt: '' });
 
-  const hendleSubmitForm = useCallback(
-    async value => {
-      if (SearchValue === value) {
-        return;
-      }
-      let inputValue = '';
-      let page = 0;
-
-      if (typeof value === 'string' && SearchValue !== value) {
-        setCurrentPage(1);
-        setSearchValue(value);
-        page = 1;
-        inputValue = value;
-        console.log('inputValue', inputValue);
-        console.log('page', page);
-        console.log('currentPage ', currentPage);
-      } else {
-        page = currentPage;
-        inputValue = SearchValue;
-      }
-
-      setFetchingCheck(true);
+  useEffect(() => {
+    const requestImages = async (searchValue, currentPage) => {
       try {
-        const { hits } = await searchPhotoApi(inputValue, page);
-        console.log('currentPage', currentPage); //ЗАПИТ НА СЕРВЕР
-
-        if (page === 1) {
+        setFetchingCheck(true);
+        const { hits } = await searchPhotoApi(searchValue, currentPage);
+        if (currentPage === 1) {
           setImages(hits);
         } else {
           setImages(prevState => [...prevState, ...hits]);
@@ -48,12 +27,23 @@ const App = () => {
         console.log(error);
         setErrorMessage(error.message);
       } finally {
-        setCurrentPage(prevState => prevState + 1);
         setFetchingCheck(false);
       }
-    },
-    [SearchValue, currentPage]
-  );
+    };
+
+    if (searchValue.length === 0 && currentPage === 1) return;
+
+    requestImages(searchValue, currentPage);
+  }, [searchValue, currentPage]);
+
+  const hendleSubmitForm = searchValue => {
+    setSearchValue(searchValue);
+    setCurrentPage(1);
+  };
+
+  const heandleLoadMore = searchValue => {
+    setCurrentPage(prevState => prevState + 1);
+  };
 
   const handleOpenModal = (src, alt) => {
     setModal(() => ({ isOpen: true, src, alt }));
@@ -72,7 +62,7 @@ const App = () => {
         images={images}
         openFullScreenMode={handleOpenModal}
         currentPage={currentPage}
-        handleLoadMoreBtn={hendleSubmitForm}
+        handleLoadMoreBtn={heandleLoadMore}
       />
 
       {modal.isOpen && (

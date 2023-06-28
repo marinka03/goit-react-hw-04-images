@@ -1,11 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import style from '../Searchbar/Searchbar.module.css';
 
 const Searchbar = ({ onSubmit }) => {
+  const INITIAL_STATE = {
+    searchValue: '',
+  };
+  const [formData, setFormData] = useState(INITIAL_STATE);
+
   const hendleSubmit = e => {
     e.preventDefault();
-    onSubmit(e.currentTarget.name.value); // Значення з input
+    onSubmit(formData.searchValue);
+    setFormData({ searchValue: '' }); // Значення з input
+  };
+
+  const heandleSearchValueChange = ({ target: { value, name } }) => {
+    setFormData({ ...formData, [name]: value });
   };
 
   return (
@@ -16,9 +26,11 @@ const Searchbar = ({ onSubmit }) => {
         </button>
 
         <input
+          onChange={heandleSearchValueChange}
           className="input"
-          name="name"
+          name="searchValue"
           type="text"
+          value={formData.searchValue}
           autoComplete="off"
           autoFocus
           placeholder="Search images and photos"
